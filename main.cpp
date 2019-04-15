@@ -3,7 +3,7 @@ const uint8_t SENSORS_PINS[] = {A0, A1, A2, A3, A4, A5, A6, A5};
 const uint16_t DIFFERENCE_INDICATE_HAND = 30; // Need rethink about this... maybe add potentiometer.
 
 int16_t arrSensorsThreshold[NUM_OF_SENSORS] = { 0 };
-uint16_t curr_sensor_data[NUM_OF_SENSORS] = { 0 };
+uint16_t unCurrSensorData[NUM_OF_SENSORS] = { 0 };
 
 void setup() {
   // put your setup code here, to run once:
@@ -13,7 +13,8 @@ void setup() {
   for (uint8_t i = 0; i < NUM_OF_SENSORS; ++i) {
     pinMode(SENSORS_PINS[i], INPUT);
   }
-  delay(1500);
+  
+  delay(1000);
   
   calibrate();
 }
@@ -21,14 +22,14 @@ void setup() {
 void loop() {
   read_sensors_data();
 
-  for (uint8_t index_sensor = 0; index_sensor < NUM_OF_SENSORS; ++index_sensor)
+  for (uint8_t unIndexSensor = 0; unIndexSensor < NUM_OF_SENSORS; ++unIndexSensor)
   {
-    if(curr_sensor_data[index_sensor] < arrSensorsThreshold[index_sensor]){
-      Serial.println("HAND ! Laser number " + (String)index_sensor + " was with value " + (String)curr_sensor_data[index_sensor]);
+    if(unCurrSensorData[unIndexSensor] < arrSensorsThreshold[unIndexSensor]){
+      Serial.println("HAND ! Laser number " + (String)unIndexSensor + " was with value " + (String)unCurrSensorData[unIndexSensor]);
     }
     else
     {
-      //Serial.println("NOT HAND ! Laser number " + (String)index_sensor + " was with value " + (String)curr_sensor_data[index_sensor]);
+      //Serial.println("NOT HAND ! Laser number " + (String)unIndexSensor + " was with value " + (String)unCurrSensorData[unIndexSensor]);
     }
   }
 
@@ -37,7 +38,7 @@ void loop() {
 
 void read_sensors_data() {
   for (uint8_t i = 0; i < NUM_OF_SENSORS; ++i) {
-    curr_sensor_data[i] = analogRead(SENSORS_PINS[i]);
+    unCurrSensorData[i] = analogRead(SENSORS_PINS[i]);
   }
 }
 
@@ -45,25 +46,25 @@ void calibrate() {
   Serial.println("Start calibrate.");
   
   const uint16_t TIMES_TO_CHECK = 500;
-  uint32_t sum_sensors_value[NUM_OF_SENSORS] = { 0 };
+  uint32_t arrSumSensorsValue[NUM_OF_SENSORS] = { 0 };
 
   for (uint16_t i = 0; i < TIMES_TO_CHECK; ++i)
   {
       read_sensors_data();
-      for (uint8_t index_sensor = 0; index_sensor < NUM_OF_SENSORS; ++index_sensor)
+      for (uint8_t unIndexSensor = 0; unIndexSensor < NUM_OF_SENSORS; ++unIndexSensor)
       {
-          sum_sensors_value[index_sensor] += curr_sensor_data[index_sensor];
+          arrSumSensorsValue[unIndexSensor] += unCurrSensorData[unIndexSensor];
       }
 
       delay(2);
   }
   
-  for (uint8_t index_sensor = 0; index_sensor < NUM_OF_SENSORS; ++index_sensor)
+  for (uint8_t unIndexSensor = 0; unIndexSensor < NUM_OF_SENSORS; ++unIndexSensor)
   {
-    arrSensorsThreshold[index_sensor] = (sum_sensors_value[index_sensor] / TIMES_TO_CHECK) - DIFFERENCE_INDICATE_HAND;
-    Serial.println("Avg of Sensor number " + (String)index_sensor + " = " + (String)(sum_sensors_value[index_sensor] / TIMES_TO_CHECK));
+    arrSensorsThreshold[unIndexSensor] = (arrSumSensorsValue[unIndexSensor] / TIMES_TO_CHECK) - DIFFERENCE_INDICATE_HAND;
+    Serial.println("Avg of Sensor number " + (String)unIndexSensor + " = " + (String)(arrSumSensorsValue[unIndexSensor] / TIMES_TO_CHECK));
     Serial.println("Difference indicate hand was " + (String)DIFFERENCE_INDICATE_HAND);
-    Serial.println("Threshold of Sensor number " + (String)index_sensor + " = " + (String)arrSensorsThreshold[index_sensor]);
+    Serial.println("Threshold of Sensor number " + (String)unIndexSensor + " = " + (String)arrSensorsThreshold[unIndexSensor]);
   }
 
   Serial.println("End calibrate.");
