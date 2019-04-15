@@ -1,4 +1,4 @@
-const uint8_t NUM_OF_SENSORS = 1;
+const uint8_t NUM_OF_SENSORS = 8;
 const uint8_t SENSORS_PINS[] = {A0, A1, A2, A3, A4, A5, A6, A5};
 const uint16_t DIFFERENCE_INDICATE_HAND = 30; // Need rethink about this... maybe add potentiometer.
 
