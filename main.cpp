@@ -1,7 +1,7 @@
 // https://docs.google.com/document/d/1u1e99_OGgrTCQu6r2N8w6wWJ03Lfwgrgtn0teOPmOVg/edit?usp=drivesdk
 
 const uint8_t NUM_OF_SENSORS = 8;
-const uint8_t SENSORS_PINS[] = {A0, A1, A2, A3, A4, A5, A6, A5};
+const uint8_t SENSORS_PINS[] = {A0, A1, A2, A3, A4, A5, A6, A7};
 const uint16_t DIFFERENCE_INDICATE_HAND = 30; // Need rethink about this... maybe add potentiometer.
 
 int16_t arrSensorsThreshold[NUM_OF_SENSORS] = { 0 };
