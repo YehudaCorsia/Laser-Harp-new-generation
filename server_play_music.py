@@ -1,11 +1,12 @@
 import socket
 import winsound
 import threading
+import os
+from playsound import playsound
 
 # Globals
 STARTING_PORT = 5000
 NUMBER_OF_LASERS = 5
-
 
 def get_hertz(note):
 	if note == "0":
@@ -22,12 +23,15 @@ def get_hertz(note):
 		hertz = 880
 	else:
 		hertz = 987
-
 	return hertz
 
 
 def play_note(note, duration=200):
 	winsound.Beep(get_hertz(note), duration)
+
+def play_sound(number):
+	path = os.path.join("notes", str(number) + ".wav")
+	playsound(path)
 
 
 def listening(port):
@@ -39,21 +43,20 @@ def listening(port):
 
 	return client_socket
 
-
 def laser_handling(laser_number):
 	global STARTING_PORT
 
 	socket_laser = listening(STARTING_PORT + laser_number)
-	is_note_played = False
+	is_played = False
 
 	while True:
 		request = socket_laser.recv(1).decode('ascii')
 		if request == "0":
-			is_note_played = False
-
-		elif request == "1" and not is_note_played:
-			play_note(laser_number)
-			is_note_played = True
+			is_played = False
+		elif request == "1" and not is_played:
+			#play_note(laser_number)
+			play_sound(laser_number)
+			is_played = True
 
 
 def main():
@@ -66,4 +69,5 @@ def main():
 		pass
 
 
-main()
+if __name__ == "__main__":
+	main()
